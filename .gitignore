@@ -1,0 +1,35 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Python temporary files
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# API keys and secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+*secret*.toml
+*credentials*.json
+*.pem
+*.key
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local backups and generated reports
+*_backup.py
+*_before_*.py
+*.csv
+*.pdf

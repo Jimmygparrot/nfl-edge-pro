@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 import pandas as pd
@@ -86,6 +87,8 @@ class PredictionWeekMismatchTests(unittest.TestCase):
 class DashboardScheduleFailureTests(unittest.TestCase):
     def test_schedule_download_failure_warns_and_keeps_dashboard_running(self):
         app_path = Path(__file__).with_name("nfl_edge_app.py")
+        test_predictions = Path(__file__).with_name("test_predictions.csv")
+        
         with (
             patch(
                 "nflreadpy.load_schedules",
@@ -96,7 +99,9 @@ class DashboardScheduleFailureTests(unittest.TestCase):
                 return_value=pl.DataFrame(),
             ),
         ):
-            app = AppTest.from_file(str(app_path)).run()
+            app = AppTest.from_file(str(app_path))
+            app.session_state["predictions_file_override"] = str(test_predictions)
+            app.run(timeout=15)
 
         self.assertEqual(app.exception, [])
         self.assertTrue(

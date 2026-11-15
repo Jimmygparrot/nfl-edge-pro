@@ -81,7 +81,7 @@ st.set_page_config(
 st.title("🏈 NFL Edge Pro")
 st.caption("NFL Prediction & Analytics Dashboard")
 
-rankings_file = Path(__file__).parent / "nfl_predictions.csv"
+rankings_file = Path(st.session_state.get("predictions_file_override", Path(__file__).parent / "nfl_predictions.csv"))
 predictions_file = rankings_file
 
 st.divider()

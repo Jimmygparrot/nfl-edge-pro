@@ -27,9 +27,9 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
-
 # Local backups and generated reports
 *_backup.py
 *_before_*.py
 *.csv
+!test_predictions.csv
 *.pdf

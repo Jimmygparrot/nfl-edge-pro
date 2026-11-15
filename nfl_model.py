@@ -16,6 +16,8 @@ import requests
 import nflreadpy as nfl
 from scipy.stats import norm
 from nfl_weather import get_game_weather
+from nfl_prediction_tracker import save_prediction, auto_grade_completed_games
+
 
 # ==========================================
 # NFL AUTOMATIC HANDICAPPING MODEL
@@ -554,6 +556,12 @@ def analyze_games(
             injury_report_weeks,
         )
 
+        # Identify this game for permanent prediction tracking.
+        prediction["game_id"] = str(game["game_id"])
+        prediction["season"] = int(game["season"])
+        prediction["kickoff_utc"] = game["kickoff"].isoformat()
+
+
         home_name = TEAM_NAMES.get(home)
         away_name = TEAM_NAMES.get(away)
 
@@ -644,6 +652,10 @@ def analyze_games(
             )
         
         prediction["week"] = int(game["week"])
+
+        # Permanently record the prediction before kickoff.
+        save_prediction(prediction)
+
         results.append(prediction)
 
     return results
@@ -652,6 +664,12 @@ def analyze_games(
 def main():
     print("\nNFL AUTOMATIC HANDICAPPING MODEL")
     print(f"Season: {SEASON}")
+
+    print("\nChecking completed NFL games...")
+    try:
+        auto_grade_completed_games(SEASON)
+    except Exception as error:
+        print(f"Automatic grading failed: {error}")
 
     try:
         pbp, games = download_data()
@@ -742,7 +760,6 @@ def main():
     print("- Total projections use an assumed baseline.")
     print("- Probabilities are not backtested.")
     print("- No betting recommendation is implied.")
-
 
 if __name__ == "__main__":
     main()
